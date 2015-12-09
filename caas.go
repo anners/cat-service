@@ -1,5 +1,4 @@
 //http://thenewstack.io/building-a-web-server-in-go/
-//testing
 package main
 
 import (
@@ -18,7 +17,6 @@ type Message struct {
 	Text string
 }
 
-// catapi NTMzNzg
 func catpic(w http.ResponseWriter, r *http.Request) {
 	catapi := "http://thecatapi.com/api/images/get?format=html"
 	request, err := http.Get(catapi)
