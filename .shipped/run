@@ -1,3 +1,0 @@
-#!/bin/bash
-cp /tmp/shipped-out .shipped/out
-.shipped/out
