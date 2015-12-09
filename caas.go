@@ -17,6 +17,7 @@ type Message struct {
 	Text string
 }
 
+// get random cat pictures
 func catpic(w http.ResponseWriter, r *http.Request) {
 	catapi := "http://thecatapi.com/api/images/get?format=html"
 	request, err := http.Get(catapi)
