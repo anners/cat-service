@@ -1,4 +1,3 @@
-//http://thenewstack.io/building-a-web-server-in-go/
 package main
 
 import (
@@ -8,7 +7,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-
 )
 
 type Message struct {
