@@ -40,16 +40,16 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	//var data interface{}
 	err = json.Unmarshal(content, &data)
 	if err != nil {
-        panic(err.Error())
-    }
+		panic(err.Error())
+	}
 	
 	// get random image from the data returned
 	var image string 
 	randomIndex := rand.Intn(len(data["items"])-1)    	
 	randocat := data["items"][randomIndex] 
 	for _, url := range randocat {
-    	image = url
-    }
+		image = url
+	}
 
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(w, "<img src=%s>", image)
