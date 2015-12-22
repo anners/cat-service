@@ -44,7 +44,7 @@ func catpic(w http.ResponseWriter, r *http.Request) {
     }
 
     // get random image from the data returned
- 	var image string 
+    var image string 
     randomIndex := rand.Intn(len(data["items"])-1)    	
     randocat := data["items"][randomIndex] 
     for _, url := range randocat {
