@@ -22,7 +22,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 // display random cat pictures 
 func catpic(w http.ResponseWriter, r *http.Request) {
-	//catapi := "http://thecatapi.com/api/images/get?format=html"
+
 	// url for image search
 	catapi := "http://localhost:8888//image?search=cat"
 	request, err := http.Get(catapi)
@@ -42,7 +42,7 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
         panic(err.Error())
     }
-
+	
 	// get random image from the data returned
 	var image string 
 	randomIndex := rand.Intn(len(data["items"])-1)    	
