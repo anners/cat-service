@@ -27,7 +27,7 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	catapi := "http://localhost:8888//image?search=cat"
 	request, err := http.Get(catapi)
 	if err != nil {
-		panic(err)
+		panic(err)	
 	}
 	defer request.Body.Close()
 
@@ -43,11 +43,11 @@ func catpic(w http.ResponseWriter, r *http.Request) {
         panic(err.Error())
     }
 
-    // get random image from the data returned
-    var image string 
-    randomIndex := rand.Intn(len(data["items"])-1)    	
-    randocat := data["items"][randomIndex] 
-    for _, url := range randocat {
+	// get random image from the data returned
+	var image string 
+	randomIndex := rand.Intn(len(data["items"])-1)    	
+	randocat := data["items"][randomIndex] 
+	for _, url := range randocat {
     	image = url
     }
 
