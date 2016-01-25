@@ -6,11 +6,47 @@ import (
 	"io"
 	"io/ioutil"
 	"math/rand"
+	"strconv"
 	"net/http"
 )
 
 type Message struct {
 	Text string
+}
+
+type Service struct {
+	Node string `json:"Node"`
+	Address string `json:"Address"`
+	ServiceID string `json:"ServiceID"`
+	ServiceName string `json:"ServiceName"`
+	ServiceTags string `json:"ServiceTags"`
+	ServiceAddress string `json:"ServiceAddress"`
+	ServicePort int `json:"ServicePort"`
+	ServiceEnableTagOverride bool `json:"ServiceEnableTagOverride"`
+	CreateIndex int `json:"CreateIndex"`
+	ModifyIndex int `json:"ModifyIndex"`
+}
+
+// this should be it's own package but for now it's not
+func getConsulService(url string) []Service{
+	request, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer request.Body.Close()
+
+	content, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+	panic(err)
+	}
+
+	var service []Service
+	err = json.Unmarshal(content, &service)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return service
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
@@ -21,11 +57,17 @@ func hello(w http.ResponseWriter, r *http.Request) {
 // display random cat pictures 
 func catpic(w http.ResponseWriter, r *http.Request) {
 
+	consulURL := "http://localhost:8500/v1/catalog/service/image-service"
+	service := getConsulService(consul)
+
+	// set default image in case something fails and still makes it to the iamage
+	image := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
+
 	// url for image search
-	catapi := "http://localhost:8888//image?search=cat"
+	catapi := "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=cat"
 	request, err := http.Get(catapi)
 	if err != nil {
-		panic(err)	
+		panic(err)
 	}
 	defer request.Body.Close()
 
