@@ -19,7 +19,7 @@ type Service struct {
 	Address string `json:"Address"`
 	ServiceID string `json:"ServiceID"`
 	ServiceName string `json:"ServiceName"`
-	ServiceTags string `json:"ServiceTags"`
+	ServiceTags []string `json:"ServiceTags"`
 	ServiceAddress string `json:"ServiceAddress"`
 	ServicePort int `json:"ServicePort"`
 	ServiceEnableTagOverride bool `json:"ServiceEnableTagOverride"`
@@ -58,7 +58,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 func catpic(w http.ResponseWriter, r *http.Request) {
 
 	consulURL := "http://localhost:8500/v1/catalog/service/image-service"
-	service := getConsulService(consul)
+	service := getConsulService(consulURL)
 
 	// set default image in case something fails and still makes it to the iamage
 	image := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
@@ -84,7 +84,6 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// get random image from the data returned
-	var image string 
 	randomIndex := rand.Intn(len(data["items"])-1)    	
 	randocat := data["items"][randomIndex] 
 	for _, url := range randocat {
