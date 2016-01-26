@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -29,7 +30,13 @@ type Service struct {
 
 // this should be it's own package but for now it's not
 func getConsulService(url string) []Service{
-	request, err := http.Get(url)
+
+	// disable security check (at your own risk)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	request, err := client.Get(url)
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +64,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 // display random cat pictures 
 func catpic(w http.ResponseWriter, r *http.Request) {
 
-	consulURL := "http://localhost:8500/v1/catalog/service/image-service"
+	consulURL := "http://consul.service.consul:8500/v1/catalog/service/image-service"
 	service := getConsulService(consulURL)
 
 	// set default image in case something fails and still makes it to the iamage

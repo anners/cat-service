@@ -1,6 +1,15 @@
 FROM golang:1.5
+
+MAINTAINER Ann Wallace annerz@gmail.com
+
+# Copy the local package files to the container's workspace.
+ADD . /go/src/github.com/anners/cat-service
+
+# Build the cat-service command inside the container.
+RUN go install github.com/anners/cat-service
+
+# Run the cat-service command by default when the container starts.
+ENTRYPOINT /go/bin/cat-service
+
+# Document that the service listens on port 8080.
 EXPOSE 8080
-WORKDIR /go/src/app
-COPY . /go/src/app
-RUN [".shipped/build"]
-CMD .shipped/run
