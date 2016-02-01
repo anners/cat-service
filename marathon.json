@@ -6,7 +6,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "anners-docker-registry.bintray.io/cat-service:$tag",
+      "image": "cat-service/anners-docker-registry.bintray.io:latest",
       "network": "BRIDGE",
       "portMappings": [
         {
