@@ -21,6 +21,9 @@
         "forcePullImage": false
     }
   },
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 1
+  },
   "healthChecks": [
     {
       "gracePeriodSeconds": 10,
