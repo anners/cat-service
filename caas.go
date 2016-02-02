@@ -71,7 +71,7 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	image := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
 
 	// url for image search
-	catapi := "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=ultrarunner"
+	catapi := "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=grumpy+cat"
 	request, err := http.Get(catapi)
 	if err != nil {
 		panic(err)
