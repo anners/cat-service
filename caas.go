@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"strconv"
 	"net/http"
@@ -74,31 +75,31 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 	catapi := "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=grumpycat"
 	request, err := http.Get(catapi)
 	if err != nil {
-		panic(err)
-	}
-	defer request.Body.Close()
+		log.Println("problem with fetching", catapi, ":", err)
+	} else { 
+		defer request.Body.Close()
 
-	content, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		panic(err)
-	}
+		content, err := ioutil.ReadAll(request.Body)
+		if err != nil {
+			panic(err)
+		}
 
-	data := make(map[string][]map[string]string)
-	//var data interface{}
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		panic(err.Error())
+		data := make(map[string][]map[string]string)
+		//var data interface{}
+		err = json.Unmarshal(content, &data)
+		if err != nil {
+			panic(err.Error())
+		}
+		
+		// get random image from the data returned
+		randomIndex := rand.Intn(len(data["items"])-1)    	
+		randocat := data["items"][randomIndex] 
+		for _, url := range randocat {
+			image = url
+		}
 	}
-	
-	// get random image from the data returned
-	randomIndex := rand.Intn(len(data["items"])-1)    	
-	randocat := data["items"][randomIndex] 
-	for _, url := range randocat {
-		image = url
-	}
-
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "<img src=%s>", image)
+	fmt.Fprintf(w, "<img src=%s width=\"500\" height=\"500\">", image)
 }
 
 func cat(w http.ResponseWriter, r *http.Request) {
