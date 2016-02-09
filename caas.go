@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"os"
 	"strconv"
+	"strings"
 	"net/http"
 )
 
@@ -28,6 +30,7 @@ type Service struct {
 	CreateIndex int `json:"CreateIndex"`
 	ModifyIndex int `json:"ModifyIndex"`
 }
+
 
 // this should be it's own package but for now it's not
 func getConsulService(url string) []Service{
@@ -59,14 +62,42 @@ func getConsulService(url string) []Service{
 	return service
 }
 
+func downloadCatpic(url string) string{
+	extension := strings.Split(url, ".")
+	filename := "cat." + extension[len(extension)-1]
+
+	// create filename
+	file, err := os.Create("/tmp/"+filename)
+	if err != nil {
+		fmt.Println("Error while creating", filename, "-", err)
+		panic(err)
+	}
+	defer file.Close()
+
+	request, err := http.Get(url)
+	if err != nil {
+		fmt.Println("Error while downloading", url, "-", err)
+		panic(err)
+	}
+	defer request.Body.Close()
+
+	_, err = io.Copy(file, request.Body)
+	if err != nil {
+		fmt.Println("Error copying file", file, "-", err)
+		panic(err)
+	}
+	
+	return file.Name()
+}
+
 func hello (w http.ResponseWriter, r *http.Request) {  
 	io.WriteString(w, "Hello world!")
 }
 // display random cat pictures 
 func catpic(w http.ResponseWriter, r *http.Request) {
 
-	// set default image in case something fails 
-	image := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
+	// set default imageURL in case something fails 
+	imageURL := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
 	// set default image api 
 	catapi := "http://image-service.apps.ciscocloud.io/image?search=cat"
 
@@ -76,7 +107,7 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 
 	if service != nil {
 		// construct the catapi
-		catapi = "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=cat"
+		catapi = "http://imageURL-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=cat"
 	}
 	
 	request, err := http.Get(catapi)
@@ -101,11 +132,14 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 		randomIndex := rand.Intn(len(data["items"])-1)    	
 		randocat := data["items"][randomIndex] 
 		for _, url := range randocat {
-			image = url
+			imageURL = url
 		}
 	}
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "<img src=%s width=\"500\" height=\"500\">", image)
+
+	image := downloadCatpic(imageURL)
+	w.Header().Set("Content-Type", "image/jpg")
+	http.ServeFile(w, r, image)
+	//fmt.Fprintf(w, "<img src=%s width=\"500\" height=\"500\">", image)
 }
 
 func cat(w http.ResponseWriter, r *http.Request) {
@@ -119,9 +153,23 @@ func cat(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func static(w http.ResponseWriter, r *http.Request) {
+	urlSplit := strings.Split(r.URL.Path, "/")
+	filename := urlSplit[len(urlSplit)-1]
+	if len(filename) == 0 {
+		fmt.Fprint(w, "404 YO!")
+	}
+	dirFilename := "/tmp/"+filename
+
+	w.Header().Set("Content-Type", "image/jpg")
+	http.ServeFile(w, r, dirFilename)
+}
+
+
 func main() {
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/cat", cat)
 	http.HandleFunc("/catpic", catpic)
+	http.HandleFunc("/static/", static)
 	http.ListenAndServe(":8080", nil)
 }
