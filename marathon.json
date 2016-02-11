@@ -1,8 +1,8 @@
 {
   "id": "/cat-service",
   "instances": 1,
-  "cpus": 0.5,
-  "mem": 512,
+  "cpus": 0.1,
+  "mem": 128,
   "container": {
     "type": "DOCKER",
     "docker": {
@@ -22,7 +22,7 @@
     }
   },
   "upgradeStrategy": {
-    "minimumHealthCapacity": 1
+    "minimumHealthCapacity": 0
   },
   "healthChecks": [
     {
