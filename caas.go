@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"net/http"
 )
 
 type Message struct {
@@ -19,21 +19,20 @@ type Message struct {
 }
 
 type Service struct {
-	Node string `json:"Node"`
-	Address string `json:"Address"`
-	ServiceID string `json:"ServiceID"`
-	ServiceName string `json:"ServiceName"`
-	ServiceTags []string `json:"ServiceTags"`
-	ServiceAddress string `json:"ServiceAddress"`
-	ServicePort int `json:"ServicePort"`
-	ServiceEnableTagOverride bool `json:"ServiceEnableTagOverride"`
-	CreateIndex int `json:"CreateIndex"`
-	ModifyIndex int `json:"ModifyIndex"`
+	Node                     string   `json:"Node"`
+	Address                  string   `json:"Address"`
+	ServiceID                string   `json:"ServiceID"`
+	ServiceName              string   `json:"ServiceName"`
+	ServiceTags              []string `json:"ServiceTags"`
+	ServiceAddress           string   `json:"ServiceAddress"`
+	ServicePort              int      `json:"ServicePort"`
+	ServiceEnableTagOverride bool     `json:"ServiceEnableTagOverride"`
+	CreateIndex              int      `json:"CreateIndex"`
+	ModifyIndex              int      `json:"ModifyIndex"`
 }
 
-
 // this should be it's own package but for now it's not
-func getConsulService(url string) []Service{
+func getConsulService(url string) []Service {
 
 	var service []Service
 	// disable security check (at your own risk)
@@ -53,7 +52,6 @@ func getConsulService(url string) []Service{
 		panic(err)
 	}
 
-	
 	err = json.Unmarshal(content, &service)
 	if err != nil {
 		panic(err.Error())
@@ -62,12 +60,12 @@ func getConsulService(url string) []Service{
 	return service
 }
 
-func downloadCatpic(url string) string{
+func downloadCatpic(url string) string {
 	extension := strings.Split(url, ".")
 	filename := "cat." + extension[len(extension)-1]
 
 	// create filename
-	file, err := os.Create("/tmp/"+filename)
+	file, err := os.Create("/tmp/" + filename)
 	if err != nil {
 		fmt.Println("Error while creating", filename, "-", err)
 		panic(err)
@@ -86,34 +84,34 @@ func downloadCatpic(url string) string{
 		fmt.Println("Error copying file", file, "-", err)
 		panic(err)
 	}
-	
+
 	return file.Name()
 }
 
-func hello (w http.ResponseWriter, r *http.Request) {  
+func hello(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hello world!")
 }
-// display random cat pictures 
+
+// display random cat pictures
 func catpic(w http.ResponseWriter, r *http.Request) {
 
-	// set default imageURL in case something fails 
+	// set default imageURL in case something fails
 	imageURL := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
-	// set default image api 
+	// set default image api
 	catapi := "http://image-service.apps.ciscocloud.io/image?search=cat"
-
 
 	consulURL := "http://consul.service.consul:8500/v1/catalog/service/image-service"
 	service := getConsulService(consulURL)
 
 	if service != nil {
 		// construct the catapi
-		catapi = "http://imageURL-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=cat"
+		catapi = "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=cat"
 	}
-	
+
 	request, err := http.Get(catapi)
 	if err != nil {
 		log.Println("problem with fetching", catapi, ":", err)
-	} else { 
+	} else {
 		defer request.Body.Close()
 
 		content, err := ioutil.ReadAll(request.Body)
@@ -127,10 +125,10 @@ func catpic(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		
+
 		// get random image from the data returned
-		randomIndex := rand.Intn(len(data["items"])-1)    	
-		randocat := data["items"][randomIndex] 
+		randomIndex := rand.Intn(len(data["items"]) - 1)
+		randocat := data["items"][randomIndex]
 		for _, url := range randocat {
 			imageURL = url
 		}
@@ -159,12 +157,11 @@ func static(w http.ResponseWriter, r *http.Request) {
 	if len(filename) == 0 {
 		fmt.Fprint(w, "404 YO!")
 	}
-	dirFilename := "/tmp/"+filename
+	dirFilename := "/tmp/" + filename
 
 	w.Header().Set("Content-Type", "image/jpg")
 	http.ServeFile(w, r, dirFilename)
 }
-
 
 func main() {
 	http.HandleFunc("/", hello)
