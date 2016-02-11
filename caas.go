@@ -155,7 +155,8 @@ func static(w http.ResponseWriter, r *http.Request) {
 	urlSplit := strings.Split(r.URL.Path, "/")
 	filename := urlSplit[len(urlSplit)-1]
 	if len(filename) == 0 {
-		fmt.Fprint(w, "404 YO!")
+		http.Error(w, http.StatusText(404), 404)
+		return
 	}
 	dirFilename := "/tmp/" + filename
 
