@@ -1,6 +1,6 @@
 {
   "id": "/cat-service",
-  "instances": 1,
+  "instances": 2,
   "cpus": 0.1,
   "mem": 128,
   "container": {
@@ -22,7 +22,7 @@
     }
   },
   "upgradeStrategy": {
-    "minimumHealthCapacity": 0
+    "minimumHealthCapacity": 1
   },
   "healthChecks": [
     {
