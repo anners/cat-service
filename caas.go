@@ -93,7 +93,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 // display random cat pictures
-func catpic(w http.ResponseWriter, r *http.Request) {
+func pic(w http.ResponseWriter, r *http.Request) {
 
 	// set default imageURL in case something fails
 	imageURL := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
@@ -167,7 +167,7 @@ func static(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/cat", cat)
-	http.HandleFunc("/catpic", catpic)
+	http.HandleFunc("/pic", catpic)
 	http.HandleFunc("/static/", static)
 	http.ListenAndServe(":8080", nil)
 }
