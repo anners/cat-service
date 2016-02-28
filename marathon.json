@@ -1,5 +1,5 @@
 {
-  "id": "/dog-service",
+  "id": "/cat-service",
   "instances": 2,
   "cpus": 0.1,
   "mem": 128,
@@ -10,7 +10,7 @@
       "network": "BRIDGE",
       "portMappings": [
         {
-          "servicePort": 28081,
+          "servicePort": 28080,
           "containerPort": 8080,
           "hostPort": 0,
           "protocol": "tcp"
