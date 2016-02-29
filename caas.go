@@ -95,6 +95,9 @@ func hello(w http.ResponseWriter, r *http.Request) {
 // display random cat pictures
 func pic(w http.ResponseWriter, r *http.Request) {
 
+	// testing ELK
+	log.Println("YAY I AM WORKING")
+
 	// set default imageURL in case something fails
 	imageURL := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
 	// set default image api
