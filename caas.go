@@ -167,7 +167,7 @@ func static(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/cat", cat)
-	http.HandleFunc("/pic", catpic)
+	http.HandleFunc("/pic", pic)
 	http.HandleFunc("/static/", static)
 	http.ListenAndServe(":8080", nil)
 }
