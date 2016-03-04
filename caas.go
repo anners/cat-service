@@ -108,7 +108,7 @@ func pic(w http.ResponseWriter, r *http.Request) {
 
 	if service != nil {
 		// construct the catapi
-		catapi = "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=dogs"
+		catapi = "http://image-service.service.consul:" + strconv.Itoa(service[0].ServicePort) + "/image?search=horse"
 	}
 
 	request, err := http.Get(catapi)
