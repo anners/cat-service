@@ -1,5 +1,5 @@
 {
-  "id": "/cat-service-green",
+  "id": "/cat-service",
   "instances": 2,
   "cpus": 0.1,
   "mem": 128,
