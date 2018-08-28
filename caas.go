@@ -101,7 +101,7 @@ func pic(w http.ResponseWriter, r *http.Request) {
 	// set default imageURL in case something fails
 	imageURL := "http://i.dailymail.co.uk/i/pix/2014/08/05/1407225932091_wps_6_SANTA_MONICA_CA_AUGUST_04.jpg"
 	// set default image api
-	catapi := "http://image-service.apps.ciscocloud.io/image?search=cat"
+	catapi := "http://localhost:8888/image?search=cat"
 
 	consulURL := "http://consul.service.consul:8500/v1/catalog/service/image-service"
 	service := getConsulService(consulURL)
