@@ -89,7 +89,7 @@ func downloadCatpic(url string) string {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello world!")
+	io.WriteString(w, "Hello 2020!")
 }
 
 // display random cat pictures

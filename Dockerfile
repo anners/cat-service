@@ -1,15 +1,12 @@
-FROM golang:1.10
-
+FROM golang:1.13 AS build
 MAINTAINER Ann Wallace annerz@gmail.com
+WORKDIR  /go/src/github.com/anners/cat-service
+COPY caas.go . 
+RUN CGO_ENABLED=0 GOOS=linux go build -o caas .
 
-# Copy the local package files to the container's workspace.
-ADD . /go/src/github.com/anners/cat-service
-
-# Build the cat-service command inside the container.
-RUN go install github.com/anners/cat-service
-
-# Run the cat-service command by default when the container starts.
-ENTRYPOINT /go/bin/cat-service
-
+FROM alpine:latest 
+WORKDIR /root/
+COPY --from=build /go/src/github.com/anners/cat-service/caas .
+CMD ["./caas"]
 # Document that the service listens on port 8080.
 EXPOSE 8080
